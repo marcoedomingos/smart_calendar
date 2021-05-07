@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
                   SmartCalendar(
                     controller: controller,
                     initialDate: DateTime.now(),
-                    lastDate: DateTime.utc(2022, 12, 31),
+                    lastDate: DateTime.utc(2053, 04, 31),
                     locale: 'pt_BR',
                     calendarType: CalendarType.civilCalendar,
                     weekdayType: WeekDayType.medium,

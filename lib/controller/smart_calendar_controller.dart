@@ -120,7 +120,7 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
   }
 
   calcNumberOfDays(
-      {@required CalendarType calendarType, @required DateTime initialDate}) {
+      {@required CalendarType calendarType, @required DateTime initialDate, @required Function function,}) {
     switch (calendarType) {
       case CalendarType.civilCalendar:
         DateTime firstDate;
@@ -159,6 +159,9 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
           }
         }
         break;
+    }
+    if(function != null){
+      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
     }
   }
 
@@ -214,6 +217,50 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
     if(function != null){
       function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
     }
+  }
+
+  goBackWardInYear({
+    @required DateTime initialDate,
+    @required Function function,
+  }) {
+    if (currentYear >= initialDate.year) {
+      if(currentYear > initialDate.year){
+        currentYear = currentYear -1;
+        currentMonth = initialDate.month;
+        calcNumberOfDays();
+      }else{
+        currentMonth = initialDate.month;
+        calcNumberOfDays();
+      }
+    }
+    if(function != null){
+      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    }
+  }
+
+  goForWardInYear({
+    @required DateTime initialDate,
+    @required DateTime lastDate,
+    @required Function function,
+  }) {
+    if (currentYear <= lastDate.year) {
+      if(currentYear < lastDate.year){
+        currentYear = currentYear+1;
+        currentMonth = initialDate.month;
+        calcNumberOfDays();
+      }
+    }
+    if(function != null){
+      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    }
+  }
+
+  getDifferenceBetweenYears({
+    @required DateTime initialDate,
+    @required DateTime lastDate,
+  }){
+    int total = (lastDate.year-initialDate.year)+1;
+    return total;
   }
 
   @override

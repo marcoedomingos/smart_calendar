@@ -93,54 +93,328 @@ class _SmartCalendarState extends State<SmartCalendar> {
       calendarType: widget.calendarType,
       initialDate: widget.initialDate,
     );
-    if (widget.controller.weekDay != 0) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildCustomWidget(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(
-                widget.controller.daysOfTheWeek.length,
-                    (index) => Container(
-                  width: 35,
-                  height: 35,
-                  child: Text(
-                    _buildWeekDay(index),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: _buildDayColor(index)),
-                  ),
-                )),
-          ),
-          GestureDetector(
-            onHorizontalDragEnd: (details) {
-            if (details.primaryVelocity > 0){
-              setState(() {
-                widget.controller.goBackWard(
-                    calendarType: widget.calendarType,
-                    initialDate: widget.initialDate,
-                    function: widget.onBackwardOrForward
-                );
-              });
-            }else if(details.primaryVelocity < 0){
-              setState(() {
-                widget.controller.goForWard(
-                    calendarType: widget.calendarType,
-                    lastDate: widget.lastDate,
-                    function: widget.onBackwardOrForward
-                );
-              });
-            }
-          },
-          child: _buildCalendar(),
-          )
-        ],
-      );
+    if(widget.lastDate.year >= widget.initialDate.year){
+      if(widget.lastDate.year > widget.initialDate.year){
+          if (widget.controller.weekDay != 0) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    _buildMonthCalendar(context);
+                  },
+                  child: _buildCustomWidget(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(
+                      widget.controller.daysOfTheWeek.length,
+                          (index) => Container(
+                        width: 35,
+                        height: 35,
+                        child: Text(
+                          _buildWeekDay(index),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: _buildDayColor(index)),
+                        ),
+                      )),
+                ),
+                GestureDetector(
+                  onHorizontalDragEnd: (details) {
+                    if (details.primaryVelocity > 0){
+                      setState(() {
+                        widget.controller.goBackWard(
+                            calendarType: widget.calendarType,
+                            initialDate: widget.initialDate,
+                            function: widget.onBackwardOrForward
+                        );
+                      });
+                    }else if(details.primaryVelocity < 0){
+                      setState(() {
+                        widget.controller.goForWard(
+                            calendarType: widget.calendarType,
+                            lastDate: widget.lastDate,
+                            function: widget.onBackwardOrForward
+                        );
+                      });
+                    }
+                  },
+                  child: _buildCalendar(),
+                )
+              ],
+            );
+          } else {
+            return Container();
+          }
+      }else{
+        if(widget.lastDate.month >= widget.initialDate.month){
+          if (widget.controller.weekDay != 0) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    _buildMonthCalendar(context);
+                  },
+                  child: _buildCustomWidget(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(
+                      widget.controller.daysOfTheWeek.length,
+                          (index) => Container(
+                        width: 35,
+                        height: 35,
+                        child: Text(
+                          _buildWeekDay(index),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: _buildDayColor(index)),
+                        ),
+                      )),
+                ),
+                GestureDetector(
+                  onHorizontalDragEnd: (details) {
+                    if (details.primaryVelocity > 0){
+                      setState(() {
+                        widget.controller.goBackWard(
+                            calendarType: widget.calendarType,
+                            initialDate: widget.initialDate,
+                            function: widget.onBackwardOrForward
+                        );
+                      });
+                    }else if(details.primaryVelocity < 0){
+                      setState(() {
+                        widget.controller.goForWard(
+                            calendarType: widget.calendarType,
+                            lastDate: widget.lastDate,
+                            function: widget.onBackwardOrForward
+                        );
+                      });
+                    }
+                  },
+                  child: _buildCalendar(),
+                )
+              ],
+            );
+          } else {
+            return Container();
+          }
+        } else {
+          return Container();
+        }
+      }
+    } else {if(widget.initialDate.month >= widget.lastDate.month){
+      if (widget.controller.weekDay != 0) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: (){
+                _buildMonthCalendar(context);
+              },
+              child: _buildCustomWidget(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(
+                  widget.controller.daysOfTheWeek.length,
+                      (index) => Container(
+                    width: 35,
+                    height: 35,
+                    child: Text(
+                      _buildWeekDay(index),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: _buildDayColor(index)),
+                    ),
+                  )),
+            ),
+            GestureDetector(
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity > 0){
+                  setState(() {
+                    widget.controller.goBackWard(
+                        calendarType: widget.calendarType,
+                        initialDate: widget.initialDate,
+                        function: widget.onBackwardOrForward
+                    );
+                  });
+                }else if(details.primaryVelocity < 0){
+                  setState(() {
+                    widget.controller.goForWard(
+                        calendarType: widget.calendarType,
+                        lastDate: widget.lastDate,
+                        function: widget.onBackwardOrForward
+                    );
+                  });
+                }
+              },
+              child: _buildCalendar(),
+            )
+          ],
+        );
+      } else {
+        return Container();
+      }
     } else {
       return Container();
     }
+    }
   }
 
+  _buildMonthCalendar(BuildContext context){
+    var snackBar = SnackBar(
+        duration: Duration(days: 1),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: Get.width,
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          widget.controller.goBackWardInYear(
+                          initialDate: widget.initialDate,
+                          function: widget.onBackwardOrForward
+                          );
+                        });
+                      }),
+                  GestureDetector(
+                    onTap: (){
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      _buildYearCalendar(context);
+                    },
+                    child: Obx(() => Text('${widget.controller.currentYear}')),
+                  ),
+                  IconButton(
+                      icon: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          widget.controller.goForWardInYear(
+                              initialDate: widget.initialDate,
+                              lastDate: widget.lastDate,
+                              function: widget.onBackwardOrForward
+                          );
+                        });
+                      }),
+                ],
+              ),
+            ),
+            Container(
+            width: Get.width,
+            height: 200,
+            child: GridView.builder(
+              padding: EdgeInsets.only(
+                  left: 5.0, right: 5.0, top: 10, bottom: 10),
+              itemCount: widget.controller.months.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.2),
+              itemBuilder: (context, index){
+                return GestureDetector(
+                  onTap: (){
+                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                    setState(() {
+                      widget.controller.currentMonth = index+1;
+                      widget.controller.calcNumberOfDays(function: widget.onBackwardOrForward);
+                    });
+                  },
+                  child: Card(
+                    color: _buildMonthCardColor(index),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(80)
+                    ),
+                    child: Container(
+                      width: 25,
+                      height: 25,
+                      child: Center(child: Obx(()=>Text(widget.controller.months[index].toString().capitalizeFirst, style: TextStyle(color: Colors.white),))),
+                    ),
+                  ),
+                );
+              },
+            ),
+      ),
+          ],
+        )
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  _buildYearCalendar(BuildContext context){
+    var snackBar = SnackBar(
+        duration: Duration(days: 1),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: Get.width,
+              height: 50,
+              child: Center(
+                child: Text('Calendário', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+              ),
+            ),
+            Container(
+              width: Get.width,
+              height: 200,
+              child: GridView.builder(
+                padding: EdgeInsets.only(
+                    left: 5.0, right: 5.0, top: 10, bottom: 10),
+                itemCount: widget.controller.getDifferenceBetweenYears(initialDate: widget.initialDate, lastDate: widget.lastDate,),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.2),
+                itemBuilder: (context, index){
+                  return GestureDetector(
+                    onTap: (){
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      setState(() {
+                        widget.controller.currentYear = widget.initialDate.year+index;
+                        widget.controller.calcNumberOfDays(function: widget.onBackwardOrForward);
+                        _buildMonthCalendar(context);
+                      });
+                    },
+                    child: Card(
+                      color: _buildYearCardColor(index),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(80)
+                      ),
+                      child: Container(
+                        width: 25,
+                        height: 25,
+                        child: Center(child: Text('${widget.initialDate.year+index}', style: TextStyle(color: Colors.white),)),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        )
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  _buildMonthCardColor(int index){
+    if((widget.controller.currentMonth -1) == index){
+      return Colors.red;
+    }else{
+      return Colors.grey;
+    }
+  }
+
+  _buildYearCardColor(int index){
+    if(widget.controller.currentYear == widget.initialDate.year+index){
+      return Colors.red;
+    }else{
+      return Colors.grey;
+    }
+  }
   _buildCustomWidget(){
     if(widget.customTitleWidget != null){
       return widget.customTitleWidget;
