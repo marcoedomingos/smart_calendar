@@ -17,6 +17,7 @@ class SmartCalendar extends StatefulWidget {
     @required this.locale,
     @required this.calendarType,
     @required this.weekdayType,
+    this.customTitleWidget,
     this.onBackwardOrForward,
     this.onDayAddedOrRemoved,
   });
@@ -27,8 +28,9 @@ class SmartCalendar extends StatefulWidget {
   final String locale;
   final CalendarType calendarType;
   final WeekDayType weekdayType;
+  final Widget customTitleWidget;
   final Function(String month, int year) onBackwardOrForward;
-  final Function(int day, int month, int year, List dates) onDayAddedOrRemoved;
+  final Function(int day, int month, String monthName, int year, List dates) onDayAddedOrRemoved;
 
   @override
   _SmartCalendarState createState() => _SmartCalendarState();
@@ -95,45 +97,7 @@ class _SmartCalendarState extends State<SmartCalendar> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            width: Get.width,
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.black,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        widget.controller.goBackWard(
-                          calendarType: widget.calendarType,
-                          initialDate: widget.initialDate,
-                          function: widget.onBackwardOrForward
-                        );
-                      });
-                    }),
-                Obx(() => Text(
-                    '${widget.controller.months[widget.controller.currentMonth - 1].toString().capitalizeFirst} - ${widget.controller.currentYear}')),
-                IconButton(
-                    icon: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.black,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        widget.controller.goForWard(
-                          calendarType: widget.calendarType,
-                          lastDate: widget.lastDate,
-                            function: widget.onBackwardOrForward
-                        );
-                      });
-                    }),
-              ],
-            ),
-          ),
+          _buildCustomWidget(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(
@@ -148,11 +112,78 @@ class _SmartCalendarState extends State<SmartCalendar> {
                   ),
                 )),
           ),
-          _buildCalendar()
+          GestureDetector(
+            onHorizontalDragEnd: (details) {
+            if (details.primaryVelocity > 0){
+              setState(() {
+                widget.controller.goBackWard(
+                    calendarType: widget.calendarType,
+                    initialDate: widget.initialDate,
+                    function: widget.onBackwardOrForward
+                );
+              });
+            }else if(details.primaryVelocity < 0){
+              setState(() {
+                widget.controller.goForWard(
+                    calendarType: widget.calendarType,
+                    lastDate: widget.lastDate,
+                    function: widget.onBackwardOrForward
+                );
+              });
+            }
+          },
+          child: _buildCalendar(),
+          )
         ],
       );
     } else {
       return Container();
+    }
+  }
+
+  _buildCustomWidget(){
+    if(widget.customTitleWidget != null){
+      return widget.customTitleWidget;
+    }else{
+      return Container(
+        width: Get.width,
+        height: 50,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  setState(() {
+                    widget.controller.goBackWard(
+                        calendarType: widget.calendarType,
+                        initialDate: widget.initialDate,
+                        function: widget.onBackwardOrForward
+                    );
+                  });
+                }),
+            Obx(() => Text(
+                '${widget.controller.months[widget.controller.currentMonth - 1].toString().capitalizeFirst} - ${widget.controller.currentYear}')),
+            IconButton(
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  setState(() {
+                    widget.controller.goForWard(
+                        calendarType: widget.calendarType,
+                        lastDate: widget.lastDate,
+                        function: widget.onBackwardOrForward
+                    );
+                  });
+                }),
+          ],
+        ),
+      );
     }
   }
 
@@ -216,7 +247,7 @@ class _SmartCalendarState extends State<SmartCalendar> {
   }
 
   Widget _buildCalendarContent(int position, int numberOfWeeks) {
-    if (position >= (numberOfWeeks - widget.controller.weekSize) + 1) {
+    if (position >= widget.controller.checkWeekDay(numberOfWeeks)) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(7, (index) {
@@ -227,6 +258,8 @@ class _SmartCalendarState extends State<SmartCalendar> {
       return Container();
     }
   }
+
+
 
   //This will check the day and set it to each position according with he day of week, depending on
   //the type of calendar that was selected by the user when his was calling the smartCalendar

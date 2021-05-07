@@ -44,6 +44,14 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
 
   set months(value) => this._months.value = value;
 
+  checkWeekDay(int numberOfWeeks){
+    if(weekDay == 8){
+      return (numberOfWeeks - weekSize) +2;
+    }else{
+      return (numberOfWeeks - weekSize) +1;
+    }
+  }
+
   buildDayInset(int position, int index, int day, Function function) {
     List size = List.from(selectedDays);
     bool remove = false;
@@ -70,7 +78,7 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
       buildCardColor(position, index, day);
       notifyListeners();
     }
-    function(day, currentMonth, currentYear, selectedDays);
+    function(day, currentMonth, months[currentMonth - 1].toString().capitalizeFirst, currentYear, selectedDays);
   }
 
   buildCardColor(int position, int index, int day) {
@@ -174,7 +182,7 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
         }
       }
     }
-    function(months[currentMonth - 1], currentYear);
+    function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
   }
 
   goForWard({
@@ -199,7 +207,7 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
         }
       }
     }
-    function(months[currentMonth - 1], currentYear);
+    function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
   }
 
   @override
