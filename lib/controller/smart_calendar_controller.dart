@@ -78,7 +78,9 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
       buildCardColor(position, index, day);
       notifyListeners();
     }
-    function(day, currentMonth, months[currentMonth - 1].toString().capitalizeFirst, currentYear, selectedDays);
+    if(function != null){
+      function(day, currentMonth, months[currentMonth - 1].toString().capitalizeFirst, currentYear, selectedDays);
+    }
   }
 
   buildCardColor(int position, int index, int day) {
@@ -182,7 +184,9 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
         }
       }
     }
-    function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    if(function != null){
+      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    }
   }
 
   goForWard({
@@ -207,7 +211,9 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
         }
       }
     }
-    function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    if(function != null){
+      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    }
   }
 
   @override
