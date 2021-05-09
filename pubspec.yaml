@@ -1,5 +1,5 @@
 name: smart_calendar
-description: A new flutter module project.
+description: Show the calendar, with the possibility of selecting multiples days, change the month or year with simple dynamic..
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -15,7 +15,9 @@ description: A new flutter module project.
 # This version is used _only_ for the Runner app, which is used if you just do
 # a `flutter run` or a `flutter make-host-app-editable`. It has no impact
 # on any other native host app that you embed your Flutter project into.
-version: 1.0.0+1
+version: 0.0.1
+author: Marco Domingos<mmane4763@gmail.com>
+homepage: https://github.com/Marco4763/smart_calendar.git
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

@@ -1,7 +1,7 @@
 # Smart_Calendar
 ## _Smart_Calendar_
 
-Smart_Calendar is a widget that show the calendar, with the possibility of selecting multiples days, change the month or year with simple dynamic.
+Smart_Calendar is a library that show the calendar, with the possibility of selecting multiples days, change the month or year with simple dynamic.
 
 ## Features
 
