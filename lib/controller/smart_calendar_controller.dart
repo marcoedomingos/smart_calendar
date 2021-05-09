@@ -1,8 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smart_calendar/smart_calendar.dart';
+
+enum WeekDayType {
+  short,
+  medium,
+  long,
+}
+
+enum CalendarType {
+  civilCalendar,
+  notCivilCalendar,
+}
+
+enum ExtraCalendarType {
+  alertDialogType,
+  snackBarType,
+}
 
 class SmartCalendarController extends GetxController implements ChangeNotifier {
+  SmartCalendarController({
+    @required this.initialDate,
+    @required this.lastDate,
+    @required this.locale,
+    @required this.calendarType,
+    @required this.weekdayType,
+  });
+
+  final DateTime initialDate;
+  final DateTime lastDate;
+  final String locale;
+  final CalendarType calendarType;
+  final WeekDayType weekdayType;
   final _numberOfDays = [].obs;
   final _currentYear = 0.obs;
   final _currentMonth = 0.obs;
@@ -12,7 +40,7 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
   final _months = [].obs;
   final _selectedDays = [].obs;
 
-  get numberOfDays => this._numberOfDays.value;
+  get numberOfDays => this._numberOfDays;
 
   set numberOfDays(value) => this._numberOfDays.value = value;
 
@@ -32,26 +60,33 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
 
   set weekSize(value) => this._weekSize.value = value;
 
-  get selectedDays => this._selectedDays.value;
+  get selectedDays => this._selectedDays;
 
   set selectedDays(value) => this._selectedDays.value = value;
 
-  get daysOfTheWeek => this._daysOfTheWeek.value;
+  get daysOfTheWeek => this._daysOfTheWeek;
 
   set daysOfTheWeek(value) => this._daysOfTheWeek.value = value;
 
-  get months => this._months.value;
+  get months => this._months;
 
   set months(value) => this._months.value = value;
 
-  checkWeekDay(int numberOfWeeks){
-    if(weekDay == 8){
-      return (numberOfWeeks - weekSize) +2;
-    }else{
-      return (numberOfWeeks - weekSize) +1;
+  //This method check the number of weekDays to return the exact total
+  //so the widget may get exact position for each week
+  checkNumberWeekDay(int numberOfWeeks) {
+    if (weekDay == 8) {
+      return (numberOfWeeks - weekSize) + 2;
+    } else {
+      return (numberOfWeeks - weekSize) + 1;
     }
   }
 
+  //This method is responsible to add or remove the day if the user click on the day,
+  //the method check is the date is equal to any of the date that is save on
+  //the list, if there is any match, the day is removed from the list, if
+  //not, the day is added to the list, the method also return the
+  //function with the date clicked and the list of dates
   buildDayInset(int position, int index, int day, Function function) {
     List size = List.from(selectedDays);
     bool remove = false;
@@ -66,24 +101,32 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
       }
     }
     if (remove == true) {
-      selectedDays.removeWhere((element) => element['year'] == currentYear && element['month'] == currentMonth && element['day'] == day);
+      selectedDays.removeWhere((element) =>
+          element['year'] == currentYear &&
+          element['month'] == currentMonth &&
+          element['day'] == day);
       buildCardColor(position, index, day);
       notifyListeners();
     } else {
-      selectedDays.add({
-        'day': day,
-        'month': currentMonth,
-        'year': currentYear
-      });
+      selectedDays
+          .add({'day': day, 'month': currentMonth, 'year': currentYear});
       buildCardColor(position, index, day);
       notifyListeners();
     }
-    if(function != null){
-      function(day, currentMonth, months[currentMonth - 1].toString().capitalizeFirst, currentYear, selectedDays);
+    if (function != null) {
+      function(
+          day,
+          currentMonth,
+          months[currentMonth - 1].toString().capitalizeFirst,
+          currentYear,
+          selectedDays);
     }
   }
 
-  buildCardColor(int position, int index, int day) {
+  //This method has a similar functionality as the buildDayInset() method,
+  //the process is the same the difference is that this method only
+  //change color of the days that where inserted ont the date list
+  Color buildCardColor(int position, int index, int day) {
     List size = List.from(selectedDays);
     bool add = false;
     size.removeWhere((element) => element['year'] != currentYear);
@@ -103,6 +146,33 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
     }
   }
 
+  //This method is responsible to check the weekends according to the type of calendar
+  //inserted, if the day is a weekend, the method return the color Grey,
+  //if not, the method return the default color Black
+  buildWeekendColor(int index) {
+    switch (calendarType) {
+      case CalendarType.civilCalendar:
+        if (index >= 5) {
+          return Colors.grey;
+        } else {
+          return Colors.black;
+        }
+        break;
+      case CalendarType.notCivilCalendar:
+        if (index == 0) {
+          return Colors.grey;
+        } else if (index == 6) {
+          return Colors.grey;
+        } else {
+          return Colors.black;
+        }
+        break;
+    }
+  }
+
+  //This method is responsible to get the total of weeks so the buidCalendar() method
+  //may get the exact number to each position get the right week, still depending
+  //on the type of calendar inserted
   calcNumberOfWeeks({@required CalendarType calendarType}) {
     var result = 0;
     switch (calendarType) {
@@ -119,8 +189,10 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
     return result;
   }
 
-  calcNumberOfDays(
-      {@required CalendarType calendarType, @required DateTime initialDate, @required Function function,}) {
+  //This method is responsible to calculate the exact number of days
+  //each month have, get the weekday of first day of each month,
+  //still depending on the type of calendar insert
+  calcNumberOfDays({Function function}) {
     switch (calendarType) {
       case CalendarType.civilCalendar:
         DateTime firstDate;
@@ -160,16 +232,15 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
         }
         break;
     }
-    if(function != null){
-      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    if (function != null) {
+      function(
+          months[currentMonth - 1].toString().capitalizeFirst, currentYear);
     }
   }
 
-  goBackWard({
-    @required CalendarType calendarType,
-    @required DateTime initialDate,
-    @required Function function,
-  }) {
+  //This method is responsible to go to the previous month and return the
+  //function that say the exact month and year is current be showing
+  goBackWard({@required Function function}) {
     if (currentYear >= initialDate.year) {
       if (currentYear == initialDate.year) {
         if (currentMonth > initialDate.month) {
@@ -187,16 +258,15 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
         }
       }
     }
-    if(function != null){
-      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    if (function != null) {
+      function(
+          months[currentMonth - 1].toString().capitalizeFirst, currentYear);
     }
   }
 
-  goForWard({
-    @required CalendarType calendarType,
-    @required DateTime lastDate,
-    @required Function function,
-  }) {
+  //This method is responsible to go to the next month and return the
+  //function that say the exact month and year is current be showing
+  goForWard({@required Function function}) {
     if (currentYear <= lastDate.year) {
       if (currentYear == lastDate.year) {
         if (currentMonth < lastDate.month) {
@@ -214,52 +284,52 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
         }
       }
     }
-    if(function != null){
-      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    if (function != null) {
+      function(
+          months[currentMonth - 1].toString().capitalizeFirst, currentYear);
     }
   }
 
-  goBackWardInYear({
-    @required DateTime initialDate,
-    @required Function function,
-  }) {
+  //This method is responsible to go to the previous year and return the
+  //function that say the exact month and year is current be showing
+  goBackWardInYear({@required Function function}) {
     if (currentYear >= initialDate.year) {
-      if(currentYear > initialDate.year){
-        currentYear = currentYear -1;
+      if (currentYear > initialDate.year) {
+        currentYear = currentYear - 1;
         currentMonth = initialDate.month;
         calcNumberOfDays();
-      }else{
+      } else {
         currentMonth = initialDate.month;
         calcNumberOfDays();
       }
     }
-    if(function != null){
-      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    if (function != null) {
+      function(
+          months[currentMonth - 1].toString().capitalizeFirst, currentYear);
     }
   }
 
-  goForWardInYear({
-    @required DateTime initialDate,
-    @required DateTime lastDate,
-    @required Function function,
-  }) {
+  //This method is responsible to go to the next year and return the
+  //function that say the exact month and year is current be showing
+  goForWardInYear({@required Function function}) {
     if (currentYear <= lastDate.year) {
-      if(currentYear < lastDate.year){
-        currentYear = currentYear+1;
+      if (currentYear < lastDate.year) {
+        currentYear = currentYear + 1;
         currentMonth = initialDate.month;
         calcNumberOfDays();
       }
     }
-    if(function != null){
-      function(months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    if (function != null) {
+      function(
+          months[currentMonth - 1].toString().capitalizeFirst, currentYear);
     }
   }
 
-  getDifferenceBetweenYears({
-    @required DateTime initialDate,
-    @required DateTime lastDate,
-  }){
-    int total = (lastDate.year-initialDate.year)+1;
+  //This method is responsible of calculate the exact difference
+  //between the initial year and last year inserted so it may
+  //build the _buildYearCalendar() widget
+  getDifferenceBetweenYears() {
+    int total = (lastDate.year - initialDate.year) + 1;
     return total;
   }
 

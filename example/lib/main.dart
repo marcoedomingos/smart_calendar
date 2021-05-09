@@ -11,7 +11,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final controller = SmartCalendarController();
+  final controller = SmartCalendarController(
+    initialDate: DateTime.now(),
+    lastDate: DateTime.utc(2053, 04, 31),
+    locale: 'en_US',
+    calendarType: CalendarType.civilCalendar,
+    weekdayType: WeekDayType.medium,
+  );
   var month = 'Mês';
   var year = DateTime.now().year;
 
@@ -22,41 +28,25 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         body: SafeArea(
             child: Container(
-              width: Get.width / 1,
-              child: Column(
-                children: [
-                  SmartCalendar(
-                    controller: controller,
-                    initialDate: DateTime.now(),
-                    lastDate: DateTime.utc(2053, 04, 31),
-                    locale: 'pt_BR',
-                    calendarType: CalendarType.civilCalendar,
-                    weekdayType: WeekDayType.medium,
-                    customTitleWidget: Container(
-                      width: Get.width / 1.02,
-                      height: 50,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Calendário'),
-                          Text('$month-$year')
-                        ],
-                      ),
-                    ),
-                    onBackwardOrForward: (month, year){
-                      setState(() {
-                        this.month = month;
-                        this.year = year;
-                      });
-                      print('This $month and this $year');
-                    },
-                    onDayAddedOrRemoved: (day, month, monthName, year, dates){
-                      print('Selected date: $year-$monthName-$day \n $dates');
-                    },
-                  ),
-                ],
+          width: Get.width / 1,
+          child: Column(
+            children: [
+              SmartCalendar(
+                controller: controller,
+                onBackwardOrForward: (month, year) {
+                  setState(() {
+                    this.month = month;
+                    this.year = year;
+                  });
+                  print('This $month and this $year');
+                },
+                onDayAddedOrRemoved: (day, month, monthName, year, dates) {
+                  print('Selected date: $year-$monthName-$day \n $dates');
+                },
               ),
-            )),
+            ],
+          ),
+        )),
       ),
     );
   }
