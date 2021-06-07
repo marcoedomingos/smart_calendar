@@ -475,7 +475,8 @@ class _SmartCalendarState extends State<SmartCalendar> {
             return _clickableText(
               position: position,
               index: index,
-              day: widget.controller.numberOfDays[lastDay + index - widget.controller.weekDay + 2],
+              day: widget.controller.numberOfDays[
+                  lastDay + index - widget.controller.weekDay + 2],
             );
           } else {
             return Container(
@@ -506,7 +507,8 @@ class _SmartCalendarState extends State<SmartCalendar> {
               lastDay = 35;
             });
           }
-          if (lastDay + index - widget.controller.weekDay + 2 >= widget.controller.numberOfDays.length) {
+          if (lastDay + index - widget.controller.weekDay + 2 >=
+              widget.controller.numberOfDays.length) {
             return Container(
               width: 35,
               height: 35,
@@ -515,7 +517,9 @@ class _SmartCalendarState extends State<SmartCalendar> {
             return _clickableText(
               position: position,
               index: index,
-              day: widget.controller.numberOfDays[lastDay + index - widget.controller.weekDay + 1] +1,
+              day: widget.controller.numberOfDays[
+                      lastDay + index - widget.controller.weekDay + 1] +
+                  1,
             );
           }
         }
@@ -528,7 +532,8 @@ class _SmartCalendarState extends State<SmartCalendar> {
             return _clickableText(
               position: position,
               index: index,
-              day: widget.controller.numberOfDays[lastDay + index - widget.controller.weekDay + 2],
+              day: widget.controller.numberOfDays[
+                  lastDay + index - widget.controller.weekDay + 2],
             );
           } else {
             return Container(
@@ -559,7 +564,8 @@ class _SmartCalendarState extends State<SmartCalendar> {
               lastDay = 35;
             });
           }
-          if (lastDay + index - widget.controller.weekDay + 2 >= widget.controller.numberOfDays.length) {
+          if (lastDay + index - widget.controller.weekDay + 2 >=
+              widget.controller.numberOfDays.length) {
             return Container(
               width: 35,
               height: 35,
@@ -568,7 +574,9 @@ class _SmartCalendarState extends State<SmartCalendar> {
             return _clickableText(
               position: position,
               index: index,
-              day: widget.controller.numberOfDays[lastDay + index - widget.controller.weekDay + 1] + 1,
+              day: widget.controller.numberOfDays[
+                      lastDay + index - widget.controller.weekDay + 1] +
+                  1,
             );
           }
         }
@@ -591,7 +599,7 @@ class _SmartCalendarState extends State<SmartCalendar> {
             onTap: () {
               setState(() {
                 widget.controller.buildDayInset(
-                    position, index, day, widget.onDayAddedOrRemoved);
+                    position, index, day, widget.onDayAddedOrRemoved, context);
               });
             },
             child: Card(
@@ -600,11 +608,7 @@ class _SmartCalendarState extends State<SmartCalendar> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(80.0)),
               child: Center(
-                child: Text(
-                  day.toString(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: widget.controller.buildWeekendColor(index)),
-                ),
+                child: widget.controller.checkEventDate(day, index),
               ),
             ),
           ),

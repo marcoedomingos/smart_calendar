@@ -21,6 +21,8 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
   SmartCalendarController({
     @required this.initialDate,
     @required this.lastDate,
+    @required this.eventDates,
+    @required this.annualEvents,
     @required this.locale,
     @required this.calendarType,
     @required this.weekdayType,
@@ -28,6 +30,8 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
 
   final DateTime initialDate;
   final DateTime lastDate;
+  final List eventDates;
+  final bool annualEvents;
   final String locale;
   final CalendarType calendarType;
   final WeekDayType weekdayType;
@@ -87,43 +91,154 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
   //the list, if there is any match, the day is removed from the list, if
   //not, the day is added to the list, the method also return the
   //function with the date clicked and the list of dates
-  buildDayInset(int position, int index, int day, Function function) {
+  buildDayInset(int position, int index, int day, Function function,
+      BuildContext context) {
     String month = currentMonth < 10 ? "0$currentMonth" : "$currentMonth";
-    String currentDate = "$currentYear-$month-$day";
-    if(initialDate.isBefore(DateTime.parse(currentDate))){
-    List size = List.from(selectedDays);
-    bool remove = false;
-    size.removeWhere((element) => element['year'] != currentYear);
-    if (size.length > 0) {
-      size.removeWhere((element) => element['month'] != currentMonth);
-      if (size.length > 0) {
-        size.removeWhere((element) => element['day'] != day);
+    String dayClicked = day < 10 ? "0$day" : "$day";
+    String currentDate = "$currentYear-$month-$dayClicked";
+    if (initialDate.isBefore(DateTime.parse(currentDate))) {
+      List events = List.from(eventDates);
+      var selectedDay = day < 10 ? "0$day" : "$day";
+      String month = currentMonth < 10 ? "0$currentMonth" : "$currentMonth";
+      String fullDate = "$currentYear-$month-$selectedDay";
+      events.removeWhere((element) => element['date'] != fullDate);
+      if (events.length > 0) {
+        List size = List.from(selectedDays);
+        bool remove = false;
+        size.removeWhere((element) => element['year'] != currentYear);
         if (size.length > 0) {
-          remove = true;
+          size.removeWhere((element) => element['month'] != currentMonth);
+          if (size.length > 0) {
+            size.removeWhere((element) => element['day'] != day);
+            if (size.length > 0) {
+              remove = true;
+            }
+          }
+        }
+        var snackBar = SnackBar(
+          duration: Duration(days: 1),
+          content: Container(
+            width: Get.width,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                    icon: Icon(Icons.close, color: Colors.white),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        events[0]['title'],
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Container(
+                        width: Get.width / 2,
+                        child: Text(
+                          events[0]['description'],
+                          style: TextStyle(
+                            color: Colors.grey.shade200,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (remove == true) {
+                        selectedDays.removeWhere((element) =>
+                            element['year'] == currentYear &&
+                            element['month'] == currentMonth &&
+                            element['day'] == day);
+                        buildCardColor(position, index, day);
+                        notifyListeners();
+                      } else {
+                        selectedDays.add({
+                          'day': day,
+                          'month': currentMonth,
+                          'year': currentYear
+                        });
+                        buildCardColor(position, index, day);
+                        notifyListeners();
+                      }
+                      if (function != null) {
+                        function(
+                            day,
+                            currentMonth,
+                            months[currentMonth - 1].toString().capitalizeFirst,
+                            currentYear,
+                            selectedDays);
+                      }
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                    child: Card(
+                        color: remove == true ? Colors.red : Colors.green,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8.0,
+                            bottom: 8.0,
+                            left: 12.0,
+                            right: 12.0,
+                          ),
+                          child: Text(
+                            remove == true ? " - " : "+",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )),
+                  ),
+                ],
+              )
+            ]),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else {
+        List size = List.from(selectedDays);
+        bool remove = false;
+        size.removeWhere((element) => element['year'] != currentYear);
+        if (size.length > 0) {
+          size.removeWhere((element) => element['month'] != currentMonth);
+          if (size.length > 0) {
+            size.removeWhere((element) => element['day'] != day);
+            if (size.length > 0) {
+              remove = true;
+            }
+          }
+        }
+        if (remove == true) {
+          selectedDays.removeWhere((element) =>
+              element['year'] == currentYear &&
+              element['month'] == currentMonth &&
+              element['day'] == day);
+          buildCardColor(position, index, day);
+          notifyListeners();
+        } else {
+          selectedDays
+              .add({'day': day, 'month': currentMonth, 'year': currentYear});
+          buildCardColor(position, index, day);
+          notifyListeners();
+        }
+        if (function != null) {
+          function(
+              day,
+              currentMonth,
+              months[currentMonth - 1].toString().capitalizeFirst,
+              currentYear,
+              selectedDays);
         }
       }
-    }
-    if (remove == true) {
-      selectedDays.removeWhere((element) =>
-          element['year'] == currentYear &&
-          element['month'] == currentMonth &&
-          element['day'] == day);
-      buildCardColor(position, index, day);
-      notifyListeners();
-    } else {
-      selectedDays
-          .add({'day': day, 'month': currentMonth, 'year': currentYear});
-      buildCardColor(position, index, day);
-      notifyListeners();
-    }
-    if (function != null) {
-      function(
-          day,
-          currentMonth,
-          months[currentMonth - 1].toString().capitalizeFirst,
-          currentYear,
-          selectedDays);
-    }
     }
   }
 
@@ -239,6 +354,62 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
     if (function != null) {
       function(
           months[currentMonth - 1].toString().capitalizeFirst, currentYear);
+    }
+  }
+
+  //This method is responsible to check if the date that
+  //is showing const as an event on the event list and
+  //check if an annual event
+  checkEventDate(int day, int index) {
+    print(eventDates.length);
+    if (annualEvents == false) {
+      List events = List.from(eventDates);
+      var selectedDay = day < 10 ? "0$day" : "$day";
+      String month = currentMonth < 10 ? "0$currentMonth" : "$currentMonth";
+      String fullDate = "$currentYear-$month-$selectedDay";
+      events.removeWhere((element) => element['date'] != fullDate);
+      if (events.length > 0) {
+        return Text(
+          day.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.blue,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+      } else {
+        return Text(
+          day.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(color: buildWeekendColor(index)),
+        );
+      }
+    } else {
+      List events = List.from(eventDates);
+      var selectedDay = day < 10 ? "0$day" : "$day";
+      String month = currentMonth < 10 ? "0$currentMonth" : "$currentMonth";
+      String fullDate = "$month-$selectedDay";
+      events.removeWhere((element) =>
+          element['date']
+              .toString()
+              .substring(5, element['date'].toString().length) !=
+          fullDate);
+      if (events.length > 0) {
+        return Text(
+          day.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.blue,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+      } else {
+        return Text(
+          day.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(color: buildWeekendColor(index)),
+        );
+      }
     }
   }
 

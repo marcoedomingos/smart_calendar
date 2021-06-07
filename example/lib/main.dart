@@ -14,6 +14,24 @@ class _MyAppState extends State<MyApp> {
   final controller = SmartCalendarController(
     initialDate: DateTime.now(),
     lastDate: DateTime.utc(2053, 04, 31),
+    eventDates: [
+      {
+        "date": "2021-05-01",
+        "description": "This a holiday because of the Worker day",
+        "title": "Worker Day"
+      },
+      {
+        "date": "2021-06-01",
+        "description": "This a holiday because of the Kids day",
+        "title": "Kids Day"
+      },
+      {
+        "date": "2021-09-17",
+        "description": "This a holiday because of the hero day",
+        "title": "Hero day"
+      }
+    ],
+    annualEvents: false,
     locale: 'en_US',
     calendarType: CalendarType.civilCalendar,
     weekdayType: WeekDayType.medium,
