@@ -1,5 +1,6 @@
-## [0.0.2] - TODO: 20-05-2021.
+## [0.0.3] - TODO: 07-07-2021.
 
 * TODO:
-- Will have a parameter so the user can put an events list with they according dates.
+- The user will have the possibilty to enter the event on the app.
+- Will be possible to change the color of the days.
 - Parameter to say if will be multiple days or only one day selecting.

@@ -86,7 +86,10 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
     }
   }
 
-  //This method is responsible to add or remove the day if the user click on the day,
+  //This method is responsible to add or remove the day if the user click on the day, the
+  //method check if the clicked day is higher that the initial date, if it's then
+  //the process continue, if not, nothing happens, it also check if the date have
+  //an event, if true, then will show a snackbar asking to add or remove the date
   //the method check is the date is equal to any of the date that is save on
   //the list, if there is any match, the day is removed from the list, if
   //not, the day is added to the list, the method also return the
@@ -115,6 +118,7 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
             }
           }
         }
+
         var snackBar = SnackBar(
           duration: Duration(days: 1),
           content: Container(

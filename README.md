@@ -12,14 +12,42 @@ Smart_Calendar is a library that show the calendar, with the possibility of sele
 - The user can select multiple days.
 - Returns the list of selected dates and returns the current month and year every time it changes.
 
+## New Features
+- Now it's possible to add a list of events dates with they title and description, check the example below to know how to do it.
+- The list of events can be annual or not.
+
+## Solved
+- Solved the bug that was letting select the past dates.
+
+## Attention
+- Please use the example below of events dates to add events to your calendar, remember to add all parameters, the day and month are waiting for two digits, so, if the months is 1, then will be 01, the same for the day.
+
 ## Easy use
  - First you have to set the controller, where you have to set the initial and last date, the language, the calendar type and weekday type.
 ```sh
 final controller = SmartCalendarController(
     initialDate: DateTime.now(),
     lastDate: DateTime.utc(2053, 04, 31),
-        locale: 'pt_BR',
-    calendarType: CalendarType.notCivilCalendar,
+    eventDates: [
+      {
+        "date": "2021-05-01",
+        "description": "This a holiday because of the Worker day",
+        "title": "Worker Day"
+      },
+      {
+        "date": "2021-06-01",
+        "description": "This a holiday because of the Kids day",
+        "title": "Kids Day"
+      },
+      {
+        "date": "2021-09-17",
+        "description": "This a holiday because of the hero day",
+        "title": "Hero day"
+      }
+    ],
+    annualEvents: false,
+    locale: 'en_US',
+    calendarType: CalendarType.civilCalendar,
     weekdayType: WeekDayType.medium,
   );
 ```
@@ -44,6 +72,10 @@ SmartCalendar(
 - initialDate: This receive a DateTime that you want to be the initial date.
 
 - lastDate: This receive a DateTime that you want to be the last date.
+
+- eventDates: This receive a List of events dates with the parameters date, description and title.
+
+- annualEvents: This receive a Boolean to say if the event list is annual or not.
 
 - locale: This receive a String that will be locale for the intl get the exact translantion of thes month and weekdays.
 
