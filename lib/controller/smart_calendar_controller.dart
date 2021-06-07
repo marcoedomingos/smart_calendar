@@ -88,6 +88,9 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
   //not, the day is added to the list, the method also return the
   //function with the date clicked and the list of dates
   buildDayInset(int position, int index, int day, Function function) {
+    String month = currentMonth < 10 ? "0$currentMonth" : "$currentMonth";
+    String currentDate = "$currentYear-$month-$day";
+    if(initialDate.isBefore(DateTime.parse(currentDate))){
     List size = List.from(selectedDays);
     bool remove = false;
     size.removeWhere((element) => element['year'] != currentYear);
@@ -120,6 +123,7 @@ class SmartCalendarController extends GetxController implements ChangeNotifier {
           months[currentMonth - 1].toString().capitalizeFirst,
           currentYear,
           selectedDays);
+    }
     }
   }
 
